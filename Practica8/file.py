@@ -12,11 +12,11 @@ with open("iris.data") as file:
 file.close()
 for i,element in enumerate(expected_data):
     if element[0]=="Iris-setosa":
-        expected_data[i]=1
+        expected_data[i]=[1]
     elif element[0]=="Iris-versicolor":
-        expected_data[i]=0
+        expected_data[i]=[0]
     elif element[0]=="Iris-virginica":
-        expected_data[i]=-1
+        expected_data[i]=[-1]
 for i in range(len(data)):
     aux=data[i]
     aux[0]=float(aux[0])/10
@@ -27,3 +27,4 @@ for i in range(len(data)):
 data=np.array(data)
 #! here is the mistake, size of the matrix are not equal eachother
 expected_data=np.array(expected_data, ndmin=2)
+
