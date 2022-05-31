@@ -11,6 +11,9 @@ with open("iris.data") as file:
         expected_data.append([aux[-1]])
 file.close()
 for i,element in enumerate(expected_data):
+    # Setosa 0
+    # Versicolor 0.5
+    # virginica 1
     if element[0]=="Iris-setosa":
         expected_data[i]=[1]
     elif element[0]=="Iris-versicolor":

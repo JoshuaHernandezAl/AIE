@@ -1,5 +1,9 @@
 import numpy as np
 from random import random
+import tkinter as tk
+from tkinter import *
+from tkinter import ttk, messagebox
+import os
 from file import data, expected_data
 class MLP:
     def __init__(self,inputs=3,hiddenLayers=[3,5],outputs=2):
@@ -69,7 +73,7 @@ class MLP:
                 sum_error+=self._mse(target,output)
             if i%100==0:
                 print("Error: {} at epoch {}".format(sum_error/len(inputs),i))
-            if((sum_error/len(inputs))<targetError):
+            if((sum_error/len(inputs))<=targetError):
                 return "Por error, en la epoca "+str(i)
             current_epoch=i
         return "Por epocas, en la epoca "+str(current_epoch)
@@ -83,44 +87,148 @@ class MLP:
     def _mse(self,target,output):
         return np.average((target-output)**2)
     def _tanh(self,x):
-        return (1-np.exp(-x))/(1+np.exp(-x))
+        #return (1-np.exp(-x))/(1+np.exp(-x))
+        return np.tanh(x)
     def _tanh_derivate(self,x):
-        return (2*np.exp(x))/((np.exp(x)+1)**2)
-if __name__ =="__main__":
-    # num_neurons=[]
-    # hidden =int(input("Capas ocultas:"))
-    # for i in range(hidden):
-    #     layer_neurons = int(input("Cantidad de neuronas: "))
-    #     num_neurons.append(layer_neurons)
-    # epochs =int(input("Epocas:"))
-    # learning_rate=float(input("Razon de aprendizaje:"))
-    # targetError =float(input("Error:"))
-    mlp=MLP(4,[6,7],1)
+        #return (2*np.exp(x))/((np.exp(x)+1)**2)
+        return 1-(np.tanh(x)**2)
+
+# Functions
+def genTable():
+    def reset():
+        frame.destroy()
+        btn_reset.destroy()
+    rows=int(entry_hidden.get())
+    frame = Frame(mainScreen, width=250, height=300)
+    frame.grid(row=1,column=2)
+    frame.config(bg="lightblue")
+    frame.config(bd=25)
+    btn_reset=ttk.Button(mainScreen, text="Reset",command=reset)
+    btn_reset.grid(row=2,column=2,padx=15,pady=15)
+    global entries 
+    entries= []
+    for i in range(rows): #Se crea la tabla de pesos para wi
+        entries.append(Entry(frame, width=5, font=('Arial',16,'bold'),justify=tk.CENTER))
+        entries[i].grid(row=i, column=0) 
+    
+def backpropagation():
+    num_neurons=[]
+    for i in range(len(entries)):
+        num_neurons.append(int(entries[i].get()))
+    epochs =int(entry_epochs.get())
+    learning_rate=float(entry_learning_rate.get())
+    target_error =float(entry_target_error.get())
+    mlp=MLP(4,num_neurons,1)
     inputs=data
     targets=expected_data
-    
-    msg=mlp.train(inputs, targets, 10000, 0.5,0.05)
-
-
-    # create dummy data
-    #5.1,3.5,1.4,0.2,Iris-setosa
-    # 7.0,3.2,4.7,1.4,Iris-versicolor
-    # 6.4,3.1,5.5,1.8,Iris-virginica
-    # input = np.array([0.51,0.35,0.14,0.02])
-    # input = np.array([0.7,0.32,0.47,0.14])
-    input = np.array([0.64,0.31,0.55,0.18])
-    # target = np.array([1])
-    # target = np.array([0])
-    target = np.array([-1])
-
+    msg=mlp.train(inputs, targets, epochs, learning_rate,target_error)
     # get a prediction
-    output = mlp.forward_propagate(input)
+    output = mlp.forward_propagate(inputs)
     print()
-    # print("El programa termino por: {}".format(msg))
-    if round(output[0])==1:
-        out="Iris-setosa"
-    elif round(output[0])==0:
-        out="Iris-versicolor"
-    elif round(output[0])==-1:
-        out="Iris-virginica"
-    print("Our network believes that {} , {}, {} , {} is equal to {}/{} ".format(input[0], input[1],input[2],input[3], output[0],out))
+    back_paint=tk.Tk()
+    back_paint.title('Iris Plant')
+    back_paint.geometry('300x300')
+
+    paint(150,6,back_paint,inputs,output,targets)
+    messagebox.showinfo(title="Termini por:",message=msg)
+    back_paint.mainloop()
+def paint(rows,cols,root,inputs,targets,outputs):
+        file = open("results.txt", "w")
+        head=""
+    
+        for j in range(cols): #se pintan las cabeceras de la tabla
+            if j==cols-1:
+                e = Entry(root, width=5, fg='blue',font=('Arial',10,'bold')) 
+                e.grid(row=0, column=j+1) 
+                e.insert(END, 'Yesp') 
+                e.config(state=DISABLED)
+                head+="Yesp\t\t|"
+            elif j==cols-2:
+                e = Entry(root, width=5, fg='blue',font=('Arial',10,'bold')) 
+                e.grid(row=0, column=j+1) 
+                e.insert(END, 'Y') 
+                e.config(state=DISABLED)
+                head+="Y\t\t|"
+            else:
+                e = Entry(root, width=5, fg='blue',font=('Arial',10,'bold')) 
+                e.grid(row=0, column=j+1) 
+                e.insert(END, "X"+str(j)) 
+                e.config(state=DISABLED)
+                head+="X"+str(j)+"\t\t|"
+        file.write(head + os.linesep)
+        content=""
+        for i in range(rows): #se pinta el contenido de las tablas
+            content=""
+            for j in range(cols):
+                if j==cols-1:
+                    e = Entry(root, width=5, fg='blue',font=('Arial',10,'bold')) 
+                    e.grid(row=i+1, column=j+1) 
+                    e.insert(END, outputs[i][0]) 
+                    e.config(state=DISABLED)
+                    content+=str(round(outputs[i][0], 2))+"\t|"
+                elif j==cols-2:
+                    e = Entry(root, width=5, fg='blue',font=('Arial',10,'bold')) 
+                    e.grid(row=i+1, column=j+1) 
+                    e.insert(END, targets[i][0]) 
+                    e.config(state=DISABLED)
+                    content+=str(round(targets[i][0],2))+"\t|"
+                else: 
+                    e = Entry(root, width=5, fg='blue',font=('Arial',10,'bold')) 
+                    e.grid(row=i+1, column=j+1) 
+                    e.insert(END, inputs[i][j]) 
+                    e.config(state=DISABLED)
+                    content+=str(round(inputs[i][j],2))+"\t|"
+            file.write(content + os.linesep)
+        file.close()
+        os.system('code results.txt')
+def cover():
+    messagebox.showinfo(title="Elaborado por:",message="Hernandez Almaraz Joshua \n Martínez Martínez Isaac Eduardo ")
+# Main program
+if __name__ =="__main__":
+    mainScreen=tk.Tk()
+
+    mainScreen.title('Iris Plant')
+    mainScreen.geometry('700x500')
+
+    mainScreen.rowconfigure(0,weight=1)
+    mainScreen.rowconfigure(1,weight=1)
+    mainScreen.rowconfigure(2,weight=1)
+    mainScreen.rowconfigure(3,weight=1)
+    mainScreen.rowconfigure(4,weight=1)
+    mainScreen.columnconfigure(0,weight=1)
+    mainScreen.columnconfigure(1,weight=1)
+    mainScreen.columnconfigure(2,weight=1)
+    mainScreen.columnconfigure(3,weight=1)
+
+    lbl_hidden=tk.Label(mainScreen,text="Capas ocultas", justify=tk.CENTER)
+    lbl_hidden.grid(row=0,column=0)
+    entry_hidden_value=tk.StringVar(value="2")
+    entry_hidden=ttk.Entry(mainScreen,font = "Helvetica 22 bold",width=2,justify=tk.CENTER,textvariable=entry_hidden_value)
+    entry_hidden.grid(row=0, column=1)
+    btn_hidden=ttk.Button(mainScreen, text="Generar ocultas",command=genTable)
+    btn_hidden.grid(row=0,column=2,padx=15,pady=15)
+    
+    lbl_epochs=tk.Label(mainScreen,text="Epocas", justify=tk.CENTER)
+    lbl_epochs.grid(row=1,column=0)
+    entry_epochs_value=tk.StringVar(value="1000")
+    entry_epochs=ttk.Entry(mainScreen,font = "Helvetica 22 bold",width=10,justify=tk.CENTER,textvariable=entry_epochs_value)
+    entry_epochs.grid(row=1, column=1)
+    
+    lbl_learning_rate=tk.Label(mainScreen,text="Razon aprendizaje", justify=tk.CENTER)
+    lbl_learning_rate.grid(row=2,column=0)
+    entry_learning_rate_value=tk.StringVar(value="0.5")
+    entry_learning_rate=ttk.Entry(mainScreen,font = "Helvetica 22 bold",width=10,justify=tk.CENTER,textvariable=entry_learning_rate_value)
+    entry_learning_rate.grid(row=2, column=1)
+    
+    lbl_target_error=tk.Label(mainScreen,text="Error", justify=tk.CENTER)
+    lbl_target_error.grid(row=3,column=0)
+    entry_target_error_value=tk.StringVar(value="0.01")
+    entry_target_error=ttk.Entry(mainScreen,font = "Helvetica 22 bold",width=10,justify=tk.CENTER,textvariable=entry_target_error_value)
+    entry_target_error.grid(row=3, column=1)
+    
+    btn_backpropagation=ttk.Button(mainScreen, text="Backpropagation",command=backpropagation)
+    btn_backpropagation.grid(row=4,column=1,padx=15,pady=15)
+    btn_cover=ttk.Button(mainScreen, text="Portada",command=cover)
+    btn_cover.grid(row=4,column=0,padx=15,pady=15)
+    mainScreen.mainloop()
+    
