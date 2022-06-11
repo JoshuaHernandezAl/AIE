@@ -58,7 +58,7 @@ class MLP:
             weights=self.weights[i]
             derivatives=self.derivatives[i]
             weights+=derivatives*learning_rate
-    def train(self,inputs,targets,epochs,learning_rate):
+    def train(self,inputs,targets,epochs,learning_rate,targetError):
         for i in range(epochs):
             sum_error=0
             for input,target in zip(inputs,targets):
@@ -67,7 +67,12 @@ class MLP:
                 self.back_propagate(error)
                 self.gradient_descent(learning_rate)
                 sum_error+=self._mse(target,output)
-            print("Error: {} at epoch {}".format(sum_error/len(inputs),i))
+            if i%1000==0:
+                print("Error: {} at epoch {}".format(sum_error/len(inputs),i))
+            if((sum_error/len(inputs))<=targetError):
+                return "Por error, en la epoca "+str(i)
+            current_epoch=i
+        return "Por epocas, en la epoca "+str(current_epoch)
 
     def _sigmoid_derivative(self,x):
         return x*(1.0-x)
@@ -78,13 +83,13 @@ class MLP:
         return np.average((target-output)**2)
 
 if __name__ =="__main__":
-    mlp=MLP(2,[6,7],1)
+    mlp=MLP(2,[5],1)
 
     inputs = np.array([[random()/2 for _ in range(2)] for _ in range(1000)])
     targets = np.array([[i[0] + i[1]] for i in inputs])
     
     
-    mlp.train(inputs, targets, 50, 0.1)
+    mlp.train(inputs, targets, 50, 0.1,0.001)
 
         
     # create dummy data

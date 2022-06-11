@@ -5,9 +5,9 @@ def paint(rows,cols,inputs,targets,outputs):
     
         for j in range(cols): #se pintan las cabeceras de la tabla
             if j==cols-1:
-                head+="Yesp |"
+                head+="Y |"
             elif j==cols-2:
-                head+="Y\t|"
+                head+="Yesp\t|"
             else:
                 head+="X"+str(j)+"\t|"
         file.write(head + os.linesep)
@@ -18,9 +18,9 @@ def paint(rows,cols,inputs,targets,outputs):
                 if j==cols-1:
                     content+=str(round(round(outputs[i][0]), 2))+"\t|"
                 elif j==cols-2:
-                    content+=str(round(targets[i][0],2))+"\t|"
+                    content+=str(round(targets[i][0],2))+"\t\t|"
                 else: 
                     content+=str(round(inputs[i][j],2))+"\t|"
             file.write(content + os.linesep)
         file.close()
-        os.system('code results.txt')
+        # os.system('code results.txt')
