@@ -2,6 +2,10 @@ import numpy as np
 from random import random
 from file import data, expected_data
 from functions import *
+import tkinter as tk
+from tkinter import *
+from tkinter import ttk, messagebox
+import os
 
 class MLP:
     def __init__(self,inputs=3,hiddenLayers=[3,5],outputs=2):
@@ -90,7 +94,8 @@ class MLP:
         #return (2*np.exp(x))/((np.exp(x)+1)**2)
         return 1-(np.tanh(x)**2)
 
-if __name__ =="__main__":
+#functions
+def backpropagation():
     mlp=MLP(6,[7,8],1)
 
     inputs = data
@@ -112,3 +117,59 @@ if __name__ =="__main__":
     print(msg)    
     print("Efficiency: {}%".format(efficiency))
     paint(143,8,inputs, targets, output)
+    lbl_efficiency=tk.Label(mainScreen,text="Eficiencia: {}".format(efficiency), justify=tk.CENTER)
+    lbl_efficiency.grid(row=0,column=3)
+
+def cover():
+    messagebox.showinfo(title="Elaborado por:",message="Hernandez Almaraz Joshua \n Martínez Martínez Isaac Eduardo ")
+
+
+if __name__ =="__main__":
+    mainScreen=tk.Tk()
+
+    mainScreen.title('Iris Plant')
+    mainScreen.geometry('600x600')
+
+    mainScreen.rowconfigure(0,weight=1)
+    mainScreen.rowconfigure(1,weight=1)
+    mainScreen.rowconfigure(2,weight=1)
+    mainScreen.rowconfigure(3,weight=1)
+    mainScreen.rowconfigure(4,weight=1)
+    mainScreen.columnconfigure(0,weight=1)
+    mainScreen.columnconfigure(1,weight=1)
+    mainScreen.columnconfigure(2,weight=1)
+    mainScreen.columnconfigure(3,weight=1)
+
+    lbl_hidden=tk.Label(mainScreen,text="Capas ocultas", justify=tk.CENTER)
+    lbl_hidden.grid(row=0,column=0)
+    lbl_hidden_value=tk.Label(mainScreen,text="2", justify=tk.CENTER)
+    lbl_hidden_value.grid(row=0,column=1)
+    
+    lbl_neurons=tk.Label(mainScreen,text="Cantidad neuronas", justify=tk.CENTER)
+    lbl_neurons.grid(row=1,column=0)
+    lbl_neurons_value=tk.Label(mainScreen,text="7,8", justify=tk.CENTER)
+    lbl_neurons_value.grid(row=1,column=1)
+    
+    lbl_epochs=tk.Label(mainScreen,text="Epocas", justify=tk.CENTER)
+    lbl_epochs.grid(row=2,column=0)
+    lbl_epochs_value=tk.Label(mainScreen,text="50000", justify=tk.CENTER)
+    lbl_epochs_value.grid(row=2,column=1)
+    
+    
+    lbl_learning_rate=tk.Label(mainScreen,text="Razon aprendizaje", justify=tk.CENTER)
+    lbl_learning_rate.grid(row=3,column=0)
+    lbl_learning_rate_value=tk.Label(mainScreen,text="0.1", justify=tk.CENTER)
+    lbl_learning_rate_value.grid(row=3,column=1)
+    
+    
+    lbl_target_error=tk.Label(mainScreen,text="Error", justify=tk.CENTER)
+    lbl_target_error.grid(row=4,column=0)
+    lbl_target_error_value=tk.Label(mainScreen,text="0.05", justify=tk.CENTER)
+    lbl_target_error_value.grid(row=4,column=1)
+
+    btn_backpropagation=ttk.Button(mainScreen, text="Backpropagation",command=backpropagation)
+    btn_backpropagation.grid(row=5,column=1,padx=15,pady=15)
+    btn_cover=ttk.Button(mainScreen, text="Portada",command=cover)
+    btn_cover.grid(row=5,column=0,padx=15,pady=15)
+    
+    mainScreen.mainloop()
