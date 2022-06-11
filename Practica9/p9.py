@@ -83,16 +83,21 @@ class MLP:
         return 1/(1+np.exp(-x))
     def _mse(self,target,output):
         return np.average((target-output)**2)
+    def _tanh(self,x):
+        #return (1-np.exp(-x))/(1+np.exp(-x))
+        return np.tanh(x)
+    def _tanh_derivate(self,x):
+        #return (2*np.exp(x))/((np.exp(x)+1)**2)
+        return 1-(np.tanh(x)**2)
 
 if __name__ =="__main__":
-    mlp=MLP(6,[5],1)
+    mlp=MLP(6,[7,8],1)
 
     inputs = data
     targets = expected_data 
     
     
-    msg=mlp.train(inputs, targets, 5000, 0.1,0.01)
-
+    msg=mlp.train(inputs, targets, 50000, 0.1,0.05)
 
     # get a prediction
     output = mlp.forward_propagate(inputs)
@@ -100,9 +105,10 @@ if __name__ =="__main__":
     efficiency=0
     for i in range(len(targets)):
         aux=round(output[i][0])
-        if aux==targets[i]:
+        if aux==targets[i][0]:
             efficiency+=1
     efficiency=(efficiency/len(targets))*100
 
     print(msg)    
     print("Efficiency: {}%".format(efficiency))
+    paint(143,8,inputs, targets, output)
