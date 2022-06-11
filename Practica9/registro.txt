@@ -1,0 +1,4 @@
+1 capa 1 neurona 10 mil epocas no
+1 capa 2 neuronas 10 mil epocas no 
+1 capa 3 neuronas 10 mil epocas
+1 capa 4 neuronas 10 mil epocas no

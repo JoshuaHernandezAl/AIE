@@ -9,6 +9,7 @@ class MLP:
     def __init__(self,inputs=3,hiddenLayers=[3,5],outputs=2):
         self.num_inputs=inputs
         self.num_hiddenLayers=hiddenLayers
+        print(self.num_hiddenLayers)
         self.num_outputs=outputs
         
         layers=[self.num_inputs]+self.num_hiddenLayers+[self.num_outputs]
@@ -65,12 +66,22 @@ class MLP:
         current_epoch=0
         for i in range(epochs):
             sum_error=0
-            for input,target in zip(inputs,targets):
-                output=self.forward_propagate(input)
-                error=target-output
+            for j,input in enumerate(inputs):
+                target = targets[j]
+
+                # activate the network!
+                output = self.forward_propagate(input)
+
+                error = target - output
+
                 self.back_propagate(error)
+
+                # now perform gradient descent on the derivatives
+                # (this will update the weights
                 self.gradient_descent(learning_rate)
-                sum_error+=self._mse(target,output)
+
+                # keep track of the MSE for reporting later
+                sum_error += self._mse(target, output)
             if i%100==0:
                 print("Error: {} at epoch {}".format(sum_error/len(inputs),i))
             if((sum_error/len(inputs))<=targetError):

@@ -1,0 +1,16 @@
+https://archive.ics.uci.edu/ml/datasets/Balloons
+
+https://archive.ics.uci.edu/ml/datasets/Balance+Scale
+
+https://archive.ics.uci.edu/ml/datasets/Haberman%27s+Survival
+
+https://archive.ics.uci.edu/ml/datasets/Hayes-Roth
+
+https://archive.ics.uci.edu/ml/datasets/Lenses
+
+https://archive.ics.uci.edu/ml/datasets/Teaching+Assistant+Evaluation
+
+https://archive.ics.uci.edu/ml/datasets/Somerville+Happiness+Survey
+
+
+
